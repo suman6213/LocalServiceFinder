@@ -1,0 +1,154 @@
+package com.example.localservicefinder;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.textfield.TextInputLayout;
+
+public class CustomerRegistration extends AppCompatActivity {
+
+    private TextInputLayout etFullName, etEmail, etPhone, etAddress, etPassword, etConfirmPassword;
+    private Button csBtnRegister;
+    private ImageView btnBack;
+    private TextView csLogin;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.customer_registration);
+
+        initViews();
+        setUpClickListeners();
+        setTextWatchers();
+
+        // System Back Button / Back Gesture Handler
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navigateBackToRoleSelection();
+            }
+        });
+    }
+
+    private void initViews() {
+        btnBack = findViewById(R.id.btnBack);
+        csLogin = findViewById(R.id.tvLogin);
+
+        etFullName = findViewById(R.id.etFullName);
+        etEmail = findViewById(R.id.etEmail);
+        etPhone = findViewById(R.id.etPhone);
+        etAddress = findViewById(R.id.etAddress);
+        etPassword = findViewById(R.id.etPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        csBtnRegister = findViewById(R.id.CsBtnRegister);
+    }
+
+    private void setUpClickListeners() {
+        btnBack.setOnClickListener(v -> navigateBackToRoleSelection());
+
+        csLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(CustomerRegistration.this, CustomerLogin.class);
+            startActivity(intent);
+            finish();
+        });
+
+        if (csBtnRegister != null) {
+            csBtnRegister.setOnClickListener(v -> performRegistration());
+        }
+    }
+
+    private void performRegistration() {
+        ValidationManager validator = ValidationManager.getInstance();
+
+        // Single-ampersand (&) ensures every evaluation runs so all invalid fields highlight at once
+        boolean isNameValid = validator.checkEmpty(etFullName);
+        boolean isEmailValid = validator.checkEmail(etEmail);
+        boolean isPhoneValid = validator.checkPhoneNumber(etPhone);
+        boolean isAddressValid = validator.checkEmpty(etAddress);
+        boolean isPasswordValid = validator.checkEmpty(etPassword);
+        boolean isConfirmPasswordValid = validator.checkEmpty(etConfirmPassword) & validator.matchPassword(etPassword, etConfirmPassword);
+
+        if (isNameValid & isEmailValid & isPhoneValid & isAddressValid & isPasswordValid & isConfirmPasswordValid) {
+            String name = etFullName.getEditText().getText().toString().trim();
+            String email = etEmail.getEditText().getText().toString().trim();
+            String phone = etPhone.getEditText().getText().toString().trim();
+            String address = etAddress.getEditText().getText().toString().trim();
+            String password = etPassword.getEditText().getText().toString();
+
+            // Proceed with database insertion logic
+            Toast.makeText(CustomerRegistration.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+
+            // Navigate to Login activity
+            Intent intent = new Intent(CustomerRegistration.this, CustomerLogin.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void setTextWatchers() {
+        ValidationManager validator = ValidationManager.getInstance();
+
+        addClearErrorWatcher(etFullName, validator);
+        addClearErrorWatcher(etEmail, validator);
+        addClearErrorWatcher(etPhone, validator);
+        addClearErrorWatcher(etAddress, validator);
+        addClearErrorWatcher(etPassword, validator);
+
+        // Real-time password matching check on Confirm Password field
+        if (etConfirmPassword != null && etConfirmPassword.getEditText() != null) {
+            etConfirmPassword.getEditText().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    validator.clearError(etConfirmPassword);
+
+                    String password = (etPassword != null && etPassword.getEditText() != null)
+                            ? etPassword.getEditText().getText().toString() : "";
+                    String confirmPassword = s.toString();
+
+                    if (!confirmPassword.isEmpty() && !confirmPassword.equals(password)) {
+                        etConfirmPassword.setError("Passwords do not match");
+                    } else {
+                        etConfirmPassword.setError(null);
+                        etConfirmPassword.setErrorEnabled(false);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+        }
+    }
+
+    private void addClearErrorWatcher(TextInputLayout layout, ValidationManager validator) {
+        if (layout != null && layout.getEditText() != null) {
+            layout.getEditText().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    validator.clearError(layout);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+        }
+    }
+
+    private void navigateBackToRoleSelection() {
+        finish();
+    }
+}
