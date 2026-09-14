@@ -82,6 +82,7 @@
                 android:textSize="13sp" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etProviderEmail"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,7 +97,6 @@
                 app:startIconTint="#6B7280">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProviderEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Email Address"
@@ -108,6 +108,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etProviderPassword"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,7 +125,6 @@
                 app:startIconTint="#6B7280">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etProviderPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
@@ -136,7 +136,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnNextStep1"
+                android:id="@+id/prBtnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:text="Login"

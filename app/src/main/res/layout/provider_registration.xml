@@ -432,7 +432,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Service Category"
-                android:textColor="#374151"
+                android:textColorHint="#9CA3AF"
+                android:textColor="#111827"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -453,8 +454,9 @@
                     android:id="@+id/spinnerCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Plumber"
+                    android:hint="Select Service Category"
                     android:textColorHint="#9CA3AF"
+                    android:textColor="#111827"
                     android:inputType="none"
                     android:paddingVertical="12dp"
                     android:textSize="14sp" />
@@ -487,6 +489,7 @@
                     android:layout_height="wrap_content"
                     android:hint="3"
                     android:textColorHint="#9CA3AF"
+                    android:textColor="#111827"
                     android:inputType="number"
                     android:paddingVertical="12dp"
                     android:textSize="14sp" />
@@ -520,39 +523,7 @@
                     android:gravity="top"
                     android:hint="Describe your services..."
                     android:textColorHint="#9CA3AF"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Service Area"
-                android:textColor="#374151"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="24dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeColor="#D1D5DB"
-                app:hintEnabled="false"
-                app:startIconDrawable="@drawable/ic_location"
-                app:startIconTint="#6B7280">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etServiceAreaDetails"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Kathmandu"
-                    android:textColorHint="#9CA3AF"
-                    android:paddingVertical="12dp"
+                    android:textColor="#111827"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -602,6 +573,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Kathmandu, Nepal"
                     android:textColorHint="#9CA3AF"
+                    android:textColor="#111827"
                     android:paddingVertical="12dp"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -635,8 +607,13 @@
                     android:layout_height="wrap_content"
                     android:hint="Kathmandu"
                     android:textColorHint="#9CA3AF"
+                    android:textColor="#111827"
                     android:paddingVertical="12dp"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:cursorVisible="false"
+                    android:inputType="none"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Map Placeholder Card -->
@@ -719,8 +696,9 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_provider_icon"
                     android:padding="28dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                     android:src="@drawable/ic_person"
-                    app:tint="#9CA3AF" />
+                    app:tint="#FFFFFF" />
 
                 <!-- Small Green Camera Badge Icon -->
                 <ImageView
