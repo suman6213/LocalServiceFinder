@@ -10,12 +10,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class CustomerRegistration extends AppCompatActivity {
 
+    FirebaseAuth fAuth;
     private TextInputLayout etFullName, etEmail, etPhone, etAddress, etPassword, etConfirmPassword;
     private Button csBtnRegister;
     private ImageView btnBack;
@@ -50,6 +57,8 @@ public class CustomerRegistration extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         csBtnRegister = findViewById(R.id.CsBtnRegister);
+
+        fAuth = FirebaseAuth.getInstance();
     }
 
     private void setUpClickListeners() {
@@ -77,21 +86,33 @@ public class CustomerRegistration extends AppCompatActivity {
         boolean isPasswordValid = validator.checkEmpty(etPassword);
         boolean isConfirmPasswordValid = validator.checkEmpty(etConfirmPassword) & validator.matchPassword(etPassword, etConfirmPassword);
 
-        if (isNameValid & isEmailValid & isPhoneValid & isAddressValid & isPasswordValid & isConfirmPasswordValid) {
-            String name = etFullName.getEditText().getText().toString().trim();
-            String email = etEmail.getEditText().getText().toString().trim();
-            String phone = etPhone.getEditText().getText().toString().trim();
-            String address = etAddress.getEditText().getText().toString().trim();
-            String password = etPassword.getEditText().getText().toString();
+        boolean isFormValid = isNameValid & isEmailValid & isPhoneValid & isAddressValid & isPasswordValid & isConfirmPasswordValid;
 
-            // Proceed with database insertion logic
-            Toast.makeText(CustomerRegistration.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-
-            // Navigate to Login activity
-            Intent intent = new Intent(CustomerRegistration.this, CustomerLogin.class);
-            startActivity(intent);
-            finish();
+        if (!isFormValid) {
+            return;
         }
+
+        String name = etFullName.getEditText().getText().toString().trim();
+        String email = etEmail.getEditText().getText().toString().trim();
+        String phone = etPhone.getEditText().getText().toString().trim();
+        String address = etAddress.getEditText().getText().toString().trim();
+        String password = etPassword.getEditText().getText().toString();
+
+        fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    Toast.makeText(CustomerRegistration.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(CustomerRegistration.this, CustomerLogin.class);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    String errorMessage = task.getException() != null ? task.getException().getMessage() : "Registration failed";
+                    Toast.makeText(CustomerRegistration.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setTextWatchers() {

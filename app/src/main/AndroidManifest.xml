@@ -43,6 +43,11 @@
             android:exported="false"/>
 
         <activity
+            android:name=".UserDashboard"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

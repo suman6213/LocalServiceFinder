@@ -10,12 +10,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class CustomerLogin extends AppCompatActivity {
-
+    FirebaseAuth fAuth;
     private TextInputLayout etEmail, etPassword;
     private Button csBtnLogin;
     private ImageView btnBack;
@@ -45,6 +50,8 @@ public class CustomerLogin extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         csRegister = findViewById(R.id.tvRegister);
         csBtnLogin = findViewById(R.id.CsBtnLogin);
+
+        fAuth = FirebaseAuth.getInstance();
     }
 
     private void setupClickListeners() {
@@ -64,15 +71,33 @@ public class CustomerLogin extends AppCompatActivity {
 
         // Single-ampersand (&) ensures both evaluations run so both fields show errors if empty
         boolean isEmailValid = validator.checkEmail(etEmail);
-        boolean isPasswordValid = validator.checkEmpty(etPassword);
+        boolean isPasswordValid = validator.checkPassword(etPassword);
 
-        if (isEmailValid && isPasswordValid) {
-            String email = etEmail.getEditText().getText().toString().trim();
-            String password = etPassword.getEditText().getText().toString();
+        boolean isFormValid = isEmailValid && isPasswordValid;
 
-            // Proceed with authentication/SQLite login verification
-            Toast.makeText(CustomerLogin.this, "Logging in...", Toast.LENGTH_SHORT).show();
+        if(!isFormValid){
+            return;
         }
+
+        String email = etEmail.getEditText().getText().toString().trim();
+        String password = etPassword.getEditText().getText().toString();
+
+        fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(CustomerLogin.this, "Login Successful", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(CustomerLogin.this, UserDashboard.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    String errorMessage = task.getException() != null ? task.getException().getMessage() : "Login failed";
+                    Toast.makeText(CustomerLogin.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     private void setTextWatchers() {
